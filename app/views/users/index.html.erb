@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <div class="container">
+        <div class="col-md-12">
+          <div class="col-md-4 col-md-offset-4" style="padding-top:100px">
+            <div align="center" style="padding: 20px" >
+              <%= image_tag("kalpa_icon", height: "200", width: "250") %>
+            </div>
+            <% eye_types = [["Left Eye", "L"], ["Right Eye", "R"]]%>
+            <%= simple_form_for @user_form, :url => user_pdf_generate_path do |f| %>
+              <div class="form-group">
+                <%= f.input :user_id, placeholder: 'Enter Patient ID', label: false, input_html: { class: "form-control"} %>
+              </div>
+              <div class="form-group">
+                <%= f.input :name, placeholder: 'Enter Patient Name', label: false, input_html: { class: "form-control"} %>
+              </div>
+              <div class="form-group">
+                <%= f.input :age, placeholder: 'Enter Your Age', label: false, input_html: { class: "form-control"} %>
+              </div>
+              <div class="form-group">
+                <%= f.input :IOP, placeholder: 'Enter IOP mm/hg', label: false, input_html: { class: "form-control"} %>
+              </div>
+              <div class="form-group">
+                <%= "Sex"%>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <%= f.check_box :sex, input_html: { class: "form-control"}, :data => { toggle: "toggle", on: "Female", off: "Male", onstyle:"primary", offstyle: "primary", style: "ios"} %>
+              </div>
+              <div class="form-group">
+                <%= "Eye" %>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <%= f.check_box :eye_type, :data => { toggle: "toggle", on: "Right", off: "Left", onstyle:"primary", offstyle: "primary", style: "ios"}  %>
+              </div>
+              <div class="form-group">
+                <%= "Medical History" %>&nbsp&nbsp&nbsp&nbsp
+                <%= f.check_box :medical_history, input_html: { class: "form-control"}, :data => { toggle: "toggle", on: "NO", off: "Yes", onstyle:"primary", offstyle: "primary", style: "ios"} %>
+              </div>
+              <div class="form-group">
+                <%= f.input :avatar, label: false %>
+              </div>
+              <div class="form-group">
+                <%= f.submit :submit, class: "btn btn-primary" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+    </div>
+</html>
+
+<style>
+  .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
+  .toggle.ios .toggle-handle { border-radius: 20px; }
+</style>
+
+<script type="text/javascript">
+  $('#new_user').submit(function(e){
+  e.preventDefault(); // dont submit multiple times
+  this.submit(); // use native js submit
+
+  setTimeout(function(){
+    $("#new_user").trigger("reset")
+  }, 10000);
+});
+</script>

@@ -1,0 +1,56 @@
+<div class="pie"></div>
+
+<style type="text/css">
+  .pie {
+  /* Basic layout */
+  display: inline-block;
+  width: 6.75em;
+  height: 6.75em;
+  border-radius: 150%;
+
+  /* A little styling */
+  border: .150em solid #fff;
+  /*box-shadow: 0 .075em .2em .05em rgba(0,0,0,.25);*/
+
+  /* fixes a minor clipping issue in Chrome */
+  background-origin: border-box; 
+  background-image: conic-gradient(
+    #d44   90deg,      /* 25%               20  * 3.6 =  72 degrees */
+    #ac0 0 180deg,
+    #d44 0 270deg,   /* 55%         (45 + 20) * 3.6 = 234 degrees */
+    #ac0 0         /* 25%       last stop is always 360 degrees */
+  );
+}
+
+</style>
+
+<div class="pie" style="--size: 300">
+  <div class="pie_segment" data-label="hello" style="--offset: 20; --value: 60; --bg: #db0a5b; --over50: 1;"></div>
+  <div class="pie_segment" data-label="hello" style="--offset: 20; --value: 5; --bg: #db0a5b; --over50: 1;"></div>
+  <div class="pie_segment" data-label="hello" style="--offset: 20; --value: 85; --bg: #db0a5b; --over50: 1;"></div>
+  <div class="pie_segment" data-label="hello" style="--offset: 20; --value: 100; --bg: #db0a5b; --over50: 1;"></div>
+  
+  
+</div>
+
+<style type="text/css">
+  .pie_segment{
+    opacity: 0.5;
+  }
+  .pie_segment:hover{
+    opacity: 1;
+  }
+  .pie_segment:hover .pie_label{
+    opacity: 1;
+  }
+  .pie_label{
+    bottom:  0;
+    left: 0;
+    opacity: 0;
+    position: absolute;;
+    text-align: center;
+    width: 50%;
+    z-index: 2
+  }
+
+</style>

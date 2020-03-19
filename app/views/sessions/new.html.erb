@@ -1,0 +1,64 @@
+<div class="container">
+  <% if @error.present? %>
+    <div class="alert alert-danger" role="alert" align="center">
+      <%= @error %> 
+    </div>
+  <% end %>
+  <div class="col-md-12" style="padding-top: 60px">
+    <div class="col-md-4 col-md-offset-4 user_login">
+        <div align="center" style="padding: 40px">
+          <%= image_tag("kalpa_icon", height: "200", width: "250") %>
+        </div>
+        <%= form_tag sessions_path, :id => 'emailForm', :class => 'form-horizontal' do %>
+          <div class="field form-group">
+          <%#= label_tag 'email', 'Email', :class => "text-sm" %>
+          <%= text_field_tag 'email', nil, placeholder: 'Enter email', :class => 'form-control' %>
+          </div>
+          <div class="field form-group">
+          <%#= label_tag 'password', 'Password', :class => "text-sm"%>
+          <%= password_field_tag :password, nil, placeholder: 'Enter password', class:'form-control' %>
+          </div>
+          <div class="field form-group" align="center" style="background-image:none">
+            <%= button_tag(type: 'submit', :class=>"btn btn-default") do %>
+            <%= image_tag("crop_kalpa", size: "150", alt: "Cinque Terre", class: "rounded") %>
+            <% end %>
+          </div>
+        <% end %>
+    </div>
+  </div>
+</div>
+
+<style> 
+.user_login {
+  border: 1px groove;
+  padding: 20px;
+  box-shadow: 5px 10px 8px 10px #d1d1e0;
+}
+.btn.btn-default{
+  border: none;
+}
+button.btn.btn-default:hover{
+  background-color: transparent;
+}
+</style>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js">
+  $(document).ready(function() {
+    $('#form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            email: {
+                validators: {
+                    emailAddress: {
+                        message: 'The value is not a valid email address'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

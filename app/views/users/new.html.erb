@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+window.onload = function () {
+
+var options = {
+  exportEnabled: true,
+  animationEnabled: true,
+  title: {
+    text: "jQuery Spline Area Chart"
+  },
+  data: [
+  {
+    type: "splineArea",
+    dataPoints: 
+    [
+        {label: "T", y: 29.07},
+        {label: "T", y: 29.15},
+        {label: "T", y: 31.05},
+        {label: "T", y: 34.89},
+        {label: "T", y: 37.2},
+        {label: "T", y: 41.04},
+        {label: "T", y: 44.94},
+
+        {label: "S", y: 46.62},
+        {label: "S", y: 48.05},
+        {label: "S", y: 48.04},
+        {label: "S", y: 48.51},
+        {label: "S", y: 48.7},
+        {label: "S", y: 51.62},
+
+        {label: "S", y: 52.4},
+        {label: "N", y: 52.63},
+        {label: "N", y: 53.24},
+        {label: "N", y: 51.55},
+        {label: "N", y: 51.48},
+        {label: "N", y: 48.04},
+        {label: "N", y: 49.24},
+        {label: "N", y: 52.0},
+        {label: "I", y: 53.0},
+        {label: "I", y: 53.15},
+        {label: "I", y: 51.4},
+        {label: "I", y: 48.3},
+        {label: "I", y: 48.08},
+        {label: "I", y: 51.48},
+        {label: "I", y: 54.04},
+        {label: "T", y: 53.34},
+        {label: "T", y: 50.33},
+        {label: "T", y: 44.78},
+        {label: "T", y: 39.2},
+        {label: "T", y: 35.36},
+        {label: "T", y: 31.06},
+        {label: "T", y: 28.64},
+        {label: "T", y: 27.66}
+
+]
+  }
+  ]
+};
+$("#chartContainer").CanvasJSChart(options);
+
+}
+</script>
+</head>
+<body>
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+</body>
+</html>

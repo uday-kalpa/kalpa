@@ -1,0 +1,176 @@
+<% if true %>
+  <div class="alert alert-danger" role="alert" align="center">
+    <%= @error_message %> 
+  </div>
+<% else %>
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <% algo = @user_history.algo %>
+    <% t,s,n,i = algo["graphValues"].each_slice(7).to_a %>
+    <% transit = t.inject(0, :+)%>
+    <% superior = s.inject(0, :+)%>
+    <% nastole = n.inject(0, :+)%>
+    <% inferior = i.inject(0, :+)%>
+  </head>
+  <body>
+    <div><%= image_tag(Rails.root.join("app", "assets","images", "kalpa_icon.png"), size: "100") %></div>
+    <div style="float: right;margin-top:-100px"><%= image_tag(Rails.root.join("app", "assets","images", "kalpa_icon.png"), size: "100") %></div>
+    <div class="boxclass"><strong> Patient ID: <%= @user.user_id %> </strong></div> 
+    <div class="boxclass"><strong> Patient Name: <%= @user.name %> </strong></div>
+    <div class="boxclass"><strong> IOP: <%= algo["IOP"]%> mm/hg </strong></div> 
+    <div class="boxclass"><strong> Family History : <%= algo["FamilyHistory"].present? ? "YES" : "NO" %> </strong></div>
+    <div class='container'>
+      <div style="float:left; width: 60%;padding-top: 70px;">
+        <image src= "<%= @user_history.avatar.path %>" height="400px" width="500px"></image>
+      </div>
+      <div style="float:left;width: 40%;padding-top: 70px;">
+        <div class="alert">
+          <strong> FEATURES </strong>
+        </div>
+        <div style="text-align:center;padding-bottom: 70px;">
+          <div style="float:left;width: 40%"><b> <%= algo["cupDiscRatio"]%></b> </div>
+          <div style="float:left;width: 40%"><b> CUP-DISC RATIO</b> </div>
+          <div style="float:left;width: 40%"><b> <%= algo["cupDiscHorizontalRatio"] %></b> </div>
+          <div style="float:left;width: auto"><b>HORIZONTAL C/D RATIO</b></div>
+        </div>
+        <% if algo["cupDiscVerticalRatio"].between?(0,0.5) %>
+          <div class="vertical-alert" style="background-color: #42f554;"><strong style="float:left";><%= algo["cupDiscVerticalRatio"]%></strong><strong>VERTICAL C/D RATIO</strong></div>
+        <% end %>
+        <% if algo["cupDiscVerticalRatio"].between?(0.5,0.6) %>
+          <div class="vertical-alert" style="background-color: #f5e642;"><strong style="float:left";><%= algo["cupDiscVerticalRatio"]%></strong><strong>VERTICAL C/D RATIO</strong></div>
+        <% end %>
+        <% if algo["cupDiscVerticalRatio"] > 0.6 %>
+          <div class="vertical-alert" style="background-color: #eb1e1e;"><strong style="float:left";><%= algo["cupDiscVerticalRatio"]%></strong><strong>VERTICAL C/D RATIO</strong></div>
+        <% end %>
+        <div style="padding-top: 20px;">
+          <button type="button" class="btn btn-primary" style="float:left;width:70px;background-color: #77dd77;border: none;">
+            DDLS 
+          </button>
+          <div class="boxclass" style="float:left;border-color:#77dd77;margin-top:-1px;width:30px;height:30px;border-radius: 8px;">
+            <span class="badge badge-light"><%= algo["DDLSStage"] %></span>
+          </div>
+          <% if inferior > superior %>
+            <div style="float: right;"> <image src="<%= Rails.root.join("app", "assets","images", "superior_inferior.jpeg")%>" height="80" width="80"></image></div>
+          <% elsif nastole > transit %>
+            <div style="float: right;"> <image src="<%= Rails.root.join("app", "assets","images", "transit_nostel.jpeg")%>" height="80" width="80"></image></div>
+          <% else %>
+            <div style="float: right;"> <image src="<%= Rails.root.join("app", "assets","images", "none.jpeg")%>" height="80" width="80"></image></div>
+          <% end %>
+        </div>
+      </div>
+      <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+  </body>
+  </html>
+<% end %>
+<style> 
+.boxclass {
+  border: 1px solid darkgrey;
+  padding: 10px;
+  width: 200px;
+  height: 40px;
+  text-align: justify;
+  float: left;
+  margin:10px;
+}
+
+.alert {
+  padding: 5px;
+  background-color: LightGray;
+  color: black;
+  text-align: center;
+}
+.vertical-alert {
+  padding: 5px;
+  color: black;
+  text-align: center;
+}
+
+.pie {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: yellowgreen;
+}
+</style>
+
+<script type="text/javascript">
+  
+window.onload = function () {
+
+    var options = {
+      animationEnabled: true,
+      title:{
+        text: "Stock Price of BMW - September"
+      },
+      axisX:{
+        interval: 8,
+         minimum: 0,
+        crosshair: {
+          enabled: true,
+          snapToDataPoint: true
+        }
+      },
+      axisY: {
+        title: "Closing Price (in USD)",
+        includeZero: false,
+        interval: 20,
+         minimum: 0,
+        valueFormatString: "$##0.00",
+        crosshair: {
+          enabled: true,
+          snapToDataPoint: true,
+          labelFormatter: function(e) {
+            return "$" + CanvasJS.formatNumber(e.value, "##0.00");
+          }
+        }
+      },
+      data: [{
+        type: "area",
+        xValueFormatString: "DD MMM",
+        yValueFormatString: "$##0.00",
+        dataPoints: [
+            {label: "T", y: 29.07},
+            {label: "T", y: 29.15},
+            {label: "T", y: 31.05},
+            {label: "T", y: 34.89},
+            {label: "T", y: 37.2},
+            {label: "T", y: 41.04},
+            {label: "T", y: 44.94},
+            {label: "S", y: 46.62},
+            {label: "S", y: 48.05},
+            {label: "S", y: 48.04},
+            {label: "S", y: 48.51},
+            {label: "S", y: 48.7},
+            {label: "S", y: 51.62},
+            {label: "S", y: 52.4},
+            {label: "N", y: 52.63},
+            {label: "N", y: 53.24},
+            {label: "N", y: 51.55},
+            {label: "N", y: 51.48},
+            {label: "N", y: 48.04},
+            {label: "N", y: 49.24},
+            {label: "N", y: 52.0},
+            {label: "I", y: 53.0},
+            {label: "I", y: 53.15},
+            {label: "I", y: 51.4},
+            {label: "I", y: 48.3},
+            {label: "I", y: 48.08},
+            {label: "I", y: 51.48},
+            {label: "I", y: 54.04},
+            {label: "T", y: 53.34},
+            {label: "T", y: 50.33},
+            {label: "T", y: 44.78},
+            {label: "T", y: 39.2},
+            {label: "T", y: 35.36},
+            {label: "T", y: 31.06},
+            {label: "T", y: 28.64},
+            {label: "T", y: 27.66}
+
+    ]
+      }]
+};
+
+  $("#chartContainer").CanvasJSChart(options);
+
+}
+</script>
