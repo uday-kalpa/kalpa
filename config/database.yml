@@ -49,6 +49,7 @@ test:
 #
 production:
   <<: *default
-  database: kalpa_production
-  username: kalpa
-  password: <%= ENV['KALPA_DATABASE_PASSWORD'] %>
+  database: kalpmmga_kalpa_api_production 
+  username: kalpmmga_kalpmmgaapi  
+  password: UdayaBhaskar1
+  host: localhost

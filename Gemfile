@@ -43,6 +43,8 @@ gem 'wkhtmltopdf-binary'
 
 gem 'bootstrap-toggle-rails'
 
+gem 'puma' # rails s Puma
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

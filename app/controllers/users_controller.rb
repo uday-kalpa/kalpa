@@ -76,28 +76,44 @@ class UsersController < ApplicationController
         user.IOP = user_params["IOP"]
         user.medical_history = user_params["medical_history"]
       end
-    upload_response =  HTTParty.post('http://riag.kalpah.com/api/v1/image_uploader', 
-                basic_auth: { username: session[:username], password: session[:password] },
-                body: {:eye => eye_type, :Id => session[:user_id], :image => File.open(@user.avatar.current_path)},
-                headers: {"Content-Type" => "application/json"} 
-                ) 
-    upload_response = JSON.parse(upload_response)
+    begin
+      upload_response =  HTTParty.post('http://riag.kalpah.com/api/v1/image_uploader', 
+                  basic_auth: { username: session[:username], password: session[:password] },
+                  body: {:eye => eye_type, :Id => session[:user_id], :image => File.open(@user.avatar.current_path)},
+                  headers: {"Content-Type" => "application/json"} 
+                  ) 
+      upload_response = JSON.parse(upload_response)
+    rescue => e
+      @error = e.message
+      Rails.logger.info "Error making call to Payoneer: #{e.message}"
+      
+    end    
 
     if upload_response.present? && upload_response["status"] == 1
-      algo_response = HTTParty.post('http://riag.kalpah.com/api/v1/riag_algo', 
-                        basic_auth: { username: session[:username], password: session[:password] },
-                        body: {"requestId": upload_response["requestId"], "patientId": user_params["user_id"], "autoCoords": 1, "isDLInfoProvided": 0, "manualCoorectionBoolCup": 0, "manualCoorectionBoolDisc": 0}.to_json,
-                        headers: {"Content-Type" => "application/json"}
-                        ) 
+      begin
+        algo_response = HTTParty.post('http://riag.kalpah.com/api/v1/riag_algo', 
+                          basic_auth: { username: session[:username], password: session[:password] },
+                          body: {"requestId": upload_response["requestId"], "patientId": user_params["user_id"], "autoCoords": 1, "isDLInfoProvided": 0, "manualCoorectionBoolCup": 0, "manualCoorectionBoolDisc": 0}.to_json,
+                          headers: {"Content-Type" => "application/json"}
+                          ) 
+      rescue => e
+        @error = e.message
+        Rails.logger.info "Error making call to Payoneer: #{e.message}"
+      end
     end
     @algo_response = JSON.parse(File.read('/home/uday/Documents/kprogram/response.json')) rescue nil
     
     if @algo_response["status"] == 1
-      @image_response = HTTParty.post('http://riag.kalpah.com/api/v1/get_resultant_image', 
-                        basic_auth: { username: session[:username], password: session[:password] },
-                        body: {"requestId": upload_response["requestId"]}.to_json,
-                        headers: {"Content-Type" => "application/json"}
-                        ) 
+      begin
+        @image_response = HTTParty.post('http://riag.kalpah.com/api/v1/get_resultant_image', 
+                  basic_auth: { username: session[:username], password: session[:password] },
+                  body: {"requestId": upload_response["requestId"]}.to_json,
+                  headers: {"Content-Type" => "application/json"}
+                  ) 
+      rescue Exception => e
+        rror = e.message
+        Rails.logger.info "Error making call to Payoneer: #{e.message}"
+      end
     end
 
     if (upload_response.present? && upload_response["status"] == 1) && @algo_response["status"] == 1
@@ -110,7 +126,7 @@ class UsersController < ApplicationController
       uh.save!
       @user_history = uh
     else
-      @error_message = "ERROR IN FETCHING THE REPORT"
+      @error_message ||= "ERROR IN FETCHING THE REPORT"
     end    
     html = render_to_string('user_report_pdf', :layout=>false) # html file
     kit = PDFKit.new(html, :orientation => 'Landscape')
