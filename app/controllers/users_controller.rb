@@ -76,17 +76,37 @@ class UsersController < ApplicationController
         user.IOP = user_params["IOP"]
         user.medical_history = user_params["medical_history"]
       end
+      
+    if session[:user_id].include? "done"
+      begin
+        auth = {
+          :username => session[:username],
+          :password => session[:password]
+        }
+
+        options = { 
+          :basic_auth => auth 
+        }
+        results = HTTParty.get("http://riag.kalpah.com/api/v1/request_id_generator", options)
+        @request_id = results["Id"]
+      rescue => e
+        @error = e.message
+        Rails.logger.info "Error making call to Payoneer: #{e.message}"
+      end
+    end
+
     begin
       upload_response =  HTTParty.post('http://riag.kalpah.com/api/v1/image_uploader', 
                   basic_auth: { username: session[:username], password: session[:password] },
-                  body: {:eye => eye_type, :Id => session[:user_id], :image => File.open(@user.avatar.current_path)},
+                  body: {:eye => eye_type, :Id => (@request_id || session[:user_id]), :image => File.open(@user.avatar.current_path)},
                   headers: {"Content-Type" => "application/json"} 
                   ) 
       upload_response = JSON.parse(upload_response)
+      #Mark the pervious requesrt id as done
+      session[:user_id] = session[:user_id].concat("_done")
     rescue => e
       @error = e.message
       Rails.logger.info "Error making call to Payoneer: #{e.message}"
-      
     end    
 
     if upload_response.present? && upload_response["status"] == 1
